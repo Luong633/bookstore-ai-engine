@@ -1,0 +1,29 @@
+# Môi trường ảo và bộ nhớ đệm Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+
+# Biến môi trường & Khóa bảo mật (CỰC KỲ QUAN TRỌNG)
+.env
+*.env.local
+
+# Dữ liệu nặng và Trọng số mô hình (Không đẩy file nặng lên mã nguồn)
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+*.bin
+*.pt
+*.pth
+*.onnx
+*.parquet
+
+# IDE & Hệ điều hành
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

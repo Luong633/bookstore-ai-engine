@@ -1,0 +1,12 @@
+# Core Configuration & Data Validation
+pydantic==2.9.2
+pydantic-settings==2.6.1
+python-dotenv==1.0.1
+
+# Scientific Computing & Data Processing (Giai đoạn 1)
+numpy==1.26.4
+pandas==2.2.3
+
+# Code Quality & Testing
+ruff==0.7.3
+pytest==8.3.3
