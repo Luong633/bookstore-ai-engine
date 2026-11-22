@@ -1,7 +1,9 @@
 import math
 import re
+import json
 from collections import Counter
 from src.core.schemas import DocumentSchema, SearchResultSchema
+from pathlib import Path
 
 
 class BM25Retriever:
@@ -133,3 +135,38 @@ class BM25Retriever:
             )
 
         return results
+
+    def save_index(self, file_path: str | Path) -> None:
+        """Đóng gói toàn bộ chỉ mục BM25 hiện tại thành file JSON an toàn."""
+        path = Path(file_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        payload = {
+            "k1": self.k1,
+            "b": self.b,
+            "avgdl": self.avgdl,
+            "doc_len": self.doc_len,
+            "doc_freqs": self.doc_freqs,
+            "idf": self.idf,
+            "tokenized_corpus": self.tokenized_corpus,
+            "documents": [doc.model_dump() for doc in self.documents],
+        }
+        with path.open("w", encoding="utf-8") as f:
+            json.dump(payload, f, ensure_ascii=False, indent=2)
+
+    @classmethod
+    def load_index(cls, file_path: str | Path) -> "BM25Retriever":
+        """Khôi phục bộ tìm kiếm BM25 từ file JSON đã lưu mà không cần tính lại."""
+        path = Path(file_path)
+        with path.open("r", encoding="utf-8") as f:
+            payload = json.load(f)
+
+        retriever = cls(k1=payload["k1"], b=payload["b"])
+        retriever.avgdl = payload["avgdl"]
+        retriever.doc_len = payload["doc_len"]
+        retriever.doc_freqs = payload["doc_freqs"]
+        retriever.idf = payload["idf"]
+        retriever.tokenized_corpus = payload["tokenized_corpus"]
+        retriever.documents = [
+            DocumentSchema(**doc_data) for doc_data in payload["documents"]
+        ]
+        return retriever
